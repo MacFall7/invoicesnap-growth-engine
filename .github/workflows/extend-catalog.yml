@@ -1,0 +1,34 @@
+name: Extend catalog (AI, optional)
+
+# Manual: when the deterministic catalog runs low, ask Claude for more
+# schema-matched profession entries and commit them to data/catalog.ts in THIS
+# repo. Requires the ANTHROPIC_API_KEY secret. The engine works fine without it.
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "How many new catalog entries to generate"
+        required: false
+        default: "15"
+
+permissions:
+  contents: write
+
+jobs:
+  extend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Generate new catalog entries
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL || 'claude-sonnet-4-6' }}
+        run: node --experimental-strip-types scripts/ai-extend.mjs --n "${{ github.event.inputs.count || '15' }}"
+      - name: Commit new entries
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "catalog: add AI-generated profession entries"
+          file_pattern: data/catalog.ts

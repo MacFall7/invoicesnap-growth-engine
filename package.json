@@ -1,0 +1,16 @@
+{
+  "name": "invoicesnap-growth-engine",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Autonomous SEO content + indexing engine for InvoiceSnap. Mass-produces on-domain profession invoice-template pages and pings search engines to index them.",
+  "scripts": {
+    "generate": "node scripts/generate.mjs",
+    "generate:all": "node scripts/generate.mjs --batch all",
+    "ping": "node scripts/ping-index.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "catalog:stats": "node scripts/generate.mjs --stats"
+  },
+  "engines": { "node": ">=20" },
+  "license": "MIT"
+}
